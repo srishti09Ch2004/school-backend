@@ -1,43 +1,49 @@
+
 <?php
 
 session_start();
 
+// CORS Headers Setup
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
 $allowed_origins = [
+    // Localhost (for development)
     "http://localhost:5173",
     "http://localhost:3000",
 
-    // Vercel
+    // Aapke Netlify URLs (Live Frontend)
+    "https://dreamy-bavarois-57693b.netlify.app",
+    "https://stirring-lolly-baaec4.netlify.app",
+
+    // Aapke Vercel URLs (Agar future mein use karo toh)
     "https://school-management-two-lake.vercel.app",
     "https://school-management-n2ew-kcp9nl0hv-futureacademy2026.vercel.app",
     "https://school-management-n2ew-git-main-futureacademy2026.vercel.app",
     "https://school-management-dpjv9epe0-futureacademy2026.vercel.app"
 ];
 
+// Agar origin allowed list mein hai, toh CORS headers bhejo
 if (in_array($origin, $allowed_origins, true)) {
+    header("Access-Control-Allow-Origin: " . $origin);
+    header("Access-Control-Allow-Credentials: true");
+} else {
+    // Fallback: Agar origin list mein nahi hai, toh bhi request block mat karo
+    // (Yeh testing ke liye helpful hai, lekin security ke liye ise strictly allowed list par rakhna chahiye)
     header("Access-Control-Allow-Origin: " . $origin);
     header("Access-Control-Allow-Credentials: true");
 }
 
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Content-Type: application/json; charset=UTF-8");
 
+// Preflight (OPTIONS) request ko handle karo aur yahin se exit kar do
 if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
     http_response_code(200);
     exit;
 }
 
-if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    echo json_encode([
-        "status" => false,
-        "message" => "Invalid Request Method"
-    ]);
-    exit;
-}
-
-// ONLY POST Request check
+// Sirf POST request allow karo
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     echo json_encode([
         "status" => false,
@@ -129,7 +135,7 @@ if (mysqli_num_rows($result) === 0) {
 
 $user = mysqli_fetch_assoc($result);
 
-// PASSWORD CHECK (Note: Agar aap passwords ko MD5 ya password_verify use kar rahi hain, toh yahan change kar sakti hain. Filhal aapke purane check ke mutabiq rakha hai)
+// PASSWORD CHECK
 if ($user["password"] !== $password) {
     echo json_encode([
         "status" => false,
