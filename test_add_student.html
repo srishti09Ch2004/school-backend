@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Add Student Test</h2>
+
+<button onclick="addStudent()">Add Student</button>
+
+<script>
+async function addStudent(){
+
+  const response = await fetch(
+    'http://localhost/SCHOOL_MANAGEMENT_SYSTEM/backend/api/student/addStudent.php',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        full_name: 'Aman Verma',
+        email: 'aman@gmail.com',
+        password: '123456',
+        admission_no: 'FA1002',
+        class: '9',
+        section: 'B',
+        roll_no: '11',
+        gender: 'Male',
+        dob: '2009-08-20',
+        phone: '9876500000',
+        address: 'Kanpur'
+      })
+    }
+  );
+
+  const data = await response.json();
+
+  alert(data.message);
+
+  console.log(data);
+}
+</script>
+
+</body>
+</html>
