@@ -57,6 +57,8 @@ if (in_array($origin, $allowed_origins, true)) {
     }
 }
 
+// CORS Headers for Live Frontend (Netlify, Vercel, etc.)
+header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Content-Type: application/json; charset=UTF-8");
@@ -66,7 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
     exit();
 }
-
 // --- AIVEN DATABASE CONFIGURATION ---
 
 $host = "mysql-29fff39-srishtichaturvedi2912004-fb24.f.aivencloud.com"; 
